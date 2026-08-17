@@ -60,16 +60,20 @@ jobs:
       - name: Build frontend Docker image
         run: docker build -t employee-frontend:${{ github.sha }} ./frontend
       
-      - name: Scan backend image
-        uses: docker/scout-action@v1
+      - name: Scan backend Docker image
+        uses: aquasecurity/trivy-action@master
         with:
-          command: cves
-          image: employee-backend:${{ github.sha }}
-          only-severities: critical,high
+          image-ref: employee-backend:${{ github.sha }}
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
 
-      - name: Scan frontend image
-        uses: docker/scout-action@v1
+      - name: Scan frontend Docker image
+        uses: aquasecurity/trivy-action@master
         with:
-          command: cves
-          image: employee-frontend:${{ github.sha }}
-          only-severities: critical,high
+          image-ref: employee-frontend:${{ github.sha }}
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
